@@ -1,22 +1,25 @@
-<form class="my-5" [formGroup]="playerForm">
-    <div class="row d-flex flex-column flex-md-row">
-        <div class="col">
-            <div class="form-floating mb-3 ">
-                <input type="text" class="form-control" id="player1Name" placeholder="John Doe" formControlName='player1Name'>
-                <label for="player1Name">Joueur 1</label>
-            </div>
-            <input type="range" class="form-range" min="1" max="10" id="player1Lvl" formControlName='player1Lvl'>
-            <label for="player1Lvl" class="form-label">Niveau {{ playerForm.value.player1Lvl }}</label>
+<div class="container my-5">
+    <div class="forms d-flex gap-3">
+        <div class="col-6 mb-2">
+            <form  [formGroup]="player1Form">
+                <div class="form-floating mb-3 ">
+                    <input type="text" class="form-control" id="name" placeholder="John Doe" formControlName='name'>
+                    <label for="name">Joueur 1</label>
+                </div>
+                <input type="range" class="form-range" min="1" max="10" id="player1Lvl" formControlName='level'>
+                <label for="level" class="form-label">Niveau {{ player1Form.value.level }}</label>
+            </form>
         </div>
-        <div class="col">
-            <div class="form-floating mb-3 ">
-                <input type="text" class="form-control" id="player2Name" placeholder="John Doe" formControlName='player2Name'>
-                <label for="player2Name">Joueur 2</label>
-            </div>
-            <input type="range" class="form-range" min="1" max="10" id="player2Lvl" formControlName='player2Lvl'>
-            <label for="player2Lvl" class="form-label">Niveau {{ playerForm.value.player2Lvl }}</label>
+        <div class="col-6">
+            <form [formGroup]="player2Form">
+                <div class="form-floating mb-3 ">
+                    <input type="text" class="form-control" id="name" placeholder="John Doe" formControlName='name'>
+                    <label for="name">Joueur 1</label>
+                </div>
+                <input type="range" class="form-range" min="1" max="10" id="player1Lvl" formControlName='level'>
+                <label for="level" class="form-label">Niveau {{ player2Form.value.level }}</label>
+            </form>
         </div>
     </div>
-    <button class="btn btn-primary col-2" (click)="onSubmit(playerForm.value)">Jouer</button>
-</form>
-
+    <button class="btn btn-primary"(click)="onSubmit(player1Form.value, player2Form.value)">Jouer !</button>
+</div>

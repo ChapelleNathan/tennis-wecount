@@ -1,14 +1,19 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { PlayerInterface } from './Interfaces/player.interface';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent{
-  playerDatas = null;
+export class AppComponent implements OnInit{
+  playerDatas: Array<PlayerInterface>
 
-  public playerDatasEvent($event){
-    this.playerDatas = $event;
+  ngOnInit(): void {
+    this.playerDatas = null;
+  }
+
+  private strengthCalculator() {
+
   }
 }

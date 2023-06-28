@@ -1,14 +1,15 @@
 <app-navbar></app-navbar>
 <main class="container text-center mt-4">
-  <h1>Tenisorama</h1>
+  <h1>Tennisorama</h1>
   <h2 class="fs-4">Créez les joueurs pour jouer avec !</h2>
-  <app-player-form (playerFormEvent)="playerDatasEvent($event)"></app-player-form>
+  <app-player-form (playerFormEvent)="playerDatas = $event"></app-player-form>
   <section class="stats d-flex flex-column gap-3">
     <div class="game col-8 border rounded-3 offset-2 overflow-y-scroll text-start p-4 lh-lg">
       <ng-container *ngIf="playerDatas else noData">
         <ul>
-          <li>{{ playerDatas.player1Name }} niveau {{ playerDatas.player1Lvl}}</li>
-          <li>{{ playerDatas.player2Name }} niveau {{ playerDatas.player2Lvl }}</li>
+          <ng-container *ngFor="let player of playerDatas">
+            <li>{{ player.name }} niveau {{ player.level}}</li>
+          </ng-container>
         </ul>
       </ng-container>
     </div>

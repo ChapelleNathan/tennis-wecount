@@ -6,13 +6,23 @@
   <section class="stats d-flex flex-column gap-3">
     <div class="game col-8 border rounded-3 offset-2 overflow-y-scroll text-start p-4 lh-lg">
       <ng-container *ngIf="player1 && player2 else noData">
-          <ul>
-            <ng-container *ngFor="let result of gameResults">
-              <li class="fw-medium">{{ result }}</li>
-            </ng-container>
-          </ul>
+        <ul>
+          <ng-container *ngFor="let result of gameResults">
+            <li class="fw-medium">{{ result }}</li>
+          </ng-container>
+        </ul>
       </ng-container>
     </div>
+    <ul>
+      <ng-container *ngIf="sets">
+        <ng-container  *ngFor="let set of game.sets; index as i">
+          <li>
+            <p class="text-start">game {{ i + 1 }} : {{ player1.name }} a marqué <span class="fw-bold">{{ set.player1Score }}</span>
+              points {{ player2.name }} a marqué <span class="fw-bold">{{ set.player2Score }}</span> points</p>
+          </li>
+        </ng-container>
+      </ng-container>
+    </ul>
   </section>
 </main>
 

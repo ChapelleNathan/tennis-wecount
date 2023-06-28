@@ -37,8 +37,10 @@ export class AppComponent implements OnInit {
     let dice: number;
     let results = [];
     for (let i = 0; i < 150; i++) {        
-      while (true) {       
-        if(this.game.sets.length > 5 ){
+      while (true) {
+        console.log(this.game.sets.length);
+        
+        if(this.game.sets.length >= 5 ){
           return results;
         }
         dice = this.diceRoll();

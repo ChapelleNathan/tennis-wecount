@@ -7,13 +7,11 @@
     <div class="game col-8 border rounded-3 offset-2 overflow-y-scroll text-start p-4 lh-lg">
       <ng-container *ngIf="playerDatas else noData">
         <ul>
-          <ng-container *ngFor="let player of playerDatas">
-            <ul>
-              <ng-container *ngFor="let result of gameResults">
-                <p class="fw-medium">{{ result }}</p>
-              </ng-container>
-            </ul>
-          </ng-container>
+          <ul>
+            <ng-container *ngFor="let result of gameResults">
+              <p class="fw-medium">{{ result }}</p>
+            </ng-container>
+          </ul>
         </ul>
       </ng-container>
     </div>

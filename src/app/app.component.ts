@@ -7,46 +7,45 @@ import { PlayerInterface } from './Interfaces/player.interface';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  playerDatas: Array<PlayerInterface>;
+  player1: PlayerInterface;
+  player2: PlayerInterface;
   gameResults: Array<string>;
-  player1Score: number;
-  player2Score: number;
 
   ngOnInit(): void {
-    this.playerDatas = null;
+    this.player1 = null;
+    this.player2 = null
     this.gameResults = [];
   }
 
   public playerDatasEvent($event): void {
-    this.playerDatas = $event;
+    this.player1 = $event[0];
+    this.player2 = $event[1]
     if(this.gameResults) {this.gameResults = []}
-    this.gameResults = this.game(this.playerDatas);
+    this.gameResults = this.game();
   }
 
-  private game(players: Array<PlayerInterface>): Array<string> {
-    let player1 = players[0];
-    let player2 = players[1];
-    this.player1Score = 0;
-    this.player2Score = 0;
+  private game(): Array<string> {
     let dice: number;
     let results = [];
     for (let i = 0; i < 150; i++) {
       while (true) {
         dice = this.diceRoll();
-        if (player1.strength < dice) {
-          results.push('Point ' + (i + 1) + ' : remporté par ' + player1.name);
-          this.player2Score++;
+        if (this.player1.strength < dice) {
+          results.push('Point ' + (i + 1) + ' : remporté par ' + this.player1.name);
           break;
         }
         dice = this.diceRoll();
-        if (player2.strength < dice) {
-          results.push('Point ' + (i + 1) + ' : remporté par ' + player2.name);
-          this.player1Score++;
+        if (this.player2.strength < dice) {
+          results.push('Point ' + (i + 1) + ' : remporté par ' + this.player2.name);
           break;
         }
       }
     }    
     return results;
+  }
+
+  private setDetector():void {
+
   }
 
   private diceRoll(): number {

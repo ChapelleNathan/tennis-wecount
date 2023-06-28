@@ -30,20 +30,20 @@ export class AppComponent implements OnInit {
   private play():void {
     this.sets = [];
     this.game = {
-      player1: this.player1,
-      player2: this.player2,
+      players: [
+        this.player1,this.player2
+      ],
       sets: this.sets,
     };
-    for (let i = 0; i < 150; i++) {        
-      if(this.game.sets.length >= 5 ){
+    for (let i = 0; i < 150; i++) {
+      if(this.player1.setScore >=3 || this.player2.setScore >= 3) {
         return;
       }
-      if(this.player1.setScore >=3 || this.player2.setScore >= 3) {
+      if(this.game.sets.length >= 5){
         return;
       }
       this.onePoint(this.player1, this.player2,i);
     }
-    
   }
 
   private onePoint(shooter: PlayerInterface, opponent: PlayerInterface, pointNumber: number): void {
@@ -54,8 +54,6 @@ export class AppComponent implements OnInit {
       if (this.hasWonSet(opponent, shooter)){
         this.newSet();
         opponent.setScore++;
-        console.log(opponent.setScore);
-        
       }
       this.gameResults.push('Point ' + (pointNumber + 1) + ' : remporté par ' + opponent.name)
       opponent.score++;
@@ -73,6 +71,8 @@ export class AppComponent implements OnInit {
   }
   private hasWonSet(winner: PlayerInterface, looser: PlayerInterface): boolean {
     if(winner.score < 4 ){
+      return false;
+    } else if (this.game.sets.length === 4 && winner.score < 7) {
       return false;
     }
 

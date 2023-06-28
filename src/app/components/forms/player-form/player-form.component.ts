@@ -27,15 +27,23 @@ export class PlayerFormComponent implements OnInit {
   }
 
   onSubmit(player1: PlayerInterface, player2: PlayerInterface): void {
-    this.strengthCalculator(player1);
-    this.strengthCalculator(player2);
 
-    this.playerFormEvent.emit([player1, player2]);
+    let players = [player1,player2]
+    players.forEach(player => {
+      this.strengthCalculator(player)
+      this.idGenerator(player)
+      player.setScore = 0;
+    });    
+    this.playerFormEvent.emit(players);
   }
 
-  private strengthCalculator(player: PlayerInterface) {
+  private strengthCalculator(player: PlayerInterface): void {
     let strength =
       player.level * 10 - player.level / 2 - Math.floor(Math.random() * 11);
     strength < 10 ? (player.strength = 10) : (player.strength = strength);
+  }
+
+  private idGenerator(player: PlayerInterface):void {
+    player.id = Math.floor(Math.random() * 10000 + 1)
   }
 }

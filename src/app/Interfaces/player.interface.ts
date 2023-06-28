@@ -3,4 +3,6 @@ export class PlayerInterface {
     level: number;
     strength: number;
     score: number;
+    id: number;
+    setScore: number;
 }

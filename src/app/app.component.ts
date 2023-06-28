@@ -38,24 +38,29 @@ export class AppComponent implements OnInit {
       if(this.game.sets.length >= 5 ){
         return;
       }
-      this.onePoint(this.player1, this.player2,i);  
+      if(this.player1.setScore >=3 || this.player2.setScore >= 3) {
+        return;
+      }
+      this.onePoint(this.player1, this.player2,i);
     }
     
   }
 
-  private onePoint(shooter: PlayerInterface, opponent: PlayerInterface, pointNumber: number){
-    
+  private onePoint(shooter: PlayerInterface, opponent: PlayerInterface, pointNumber: number): void {
     let dice = this.diceRoll();
     if(shooter.strength > dice) {
       this.onePoint(opponent, shooter, pointNumber);
     } else {
       if (this.hasWonSet(opponent, shooter)){
-        this.newSet();        
+        this.newSet();
+        opponent.setScore++;
+        console.log(opponent.setScore);
+        
       }
       this.gameResults.push('Point ' + (pointNumber + 1) + ' : remporté par ' + opponent.name)
       opponent.score++;
     }
-  }
+}
 
   private newSet() {
     let set = new SetInterface();

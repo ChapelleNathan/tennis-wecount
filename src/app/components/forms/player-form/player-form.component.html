@@ -1,11 +1,11 @@
-<form class="my-5" [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+<form class="my-5" [formGroup]="playerForm">
     <div class="row d-flex flex-column flex-md-row">
         <div class="col">
-            <div class="form-floating mb-3 input-group-sm">
+            <div class="form-floating mb-3 ">
                 <input type="text" class="form-control" id="playerName1" placeholder="John Doe" formControlName='player1'>
                 <label for="playerName1">Joueur 1</label>
             </div>
-            <input type="range" class="form-range" min="0" max="10" id="player1Lvl" formControlName='player1Lvl'>
+            <input type="range" class="form-range" min="1" max="10" id="player1Lvl" formControlName='player1Lvl'>
             <label for="player1Lvl" class="form-label">Niveau {{ playerForm.value.player1Lvl }}</label>
         </div>
         <div class="col">
@@ -13,9 +13,10 @@
                 <input type="text" class="form-control" id="playerName2" placeholder="John Doe" formControlName='player2'>
                 <label for="playerName2">Joueur 2</label>
             </div>
-            <input type="range" class="form-range" min="0" max="10" id="player2Lvl" formControlName='player2Lvl'>
+            <input type="range" class="form-range" min="1" max="10" id="player2Lvl" formControlName='player2Lvl'>
             <label for="player2Lvl" class="form-label">Niveau {{ playerForm.value.player2Lvl }}</label>
         </div>
     </div>
+    <button class="btn btn-primary col-2" (click)="onSubmit(playerForm.value)" >Jouer</button>
 </form>
 

@@ -35,7 +35,7 @@ export class PlayerFormComponent implements OnInit {
 
   private strengthCalculator(player: PlayerInterface) {
     let strength =
-      player.level * 10 - player.level / 2 - Math.floor(Math.random() * 21);
+      player.level * 10 - player.level / 2 - Math.floor(Math.random() * 11);
     strength < 10 ? (player.strength = 10) : (player.strength = strength);
   }
 }

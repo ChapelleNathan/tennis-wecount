@@ -2,13 +2,17 @@
 <main class="container text-center mt-4">
   <h1>Tennisorama</h1>
   <h2 class="fs-4">Créez les joueurs pour jouer avec !</h2>
-  <app-player-form (playerFormEvent)="playerDatas = $event"></app-player-form>
+  <app-player-form (playerFormEvent)="playerDatasEvent($event)"></app-player-form>
   <section class="stats d-flex flex-column gap-3">
     <div class="game col-8 border rounded-3 offset-2 overflow-y-scroll text-start p-4 lh-lg">
       <ng-container *ngIf="playerDatas else noData">
         <ul>
           <ng-container *ngFor="let player of playerDatas">
-            <li>{{ player.name }} niveau {{ player.level}}</li>
+            <ul>
+              <ng-container *ngFor="let result of gameResults">
+                <p class="fw-medium">{{ result }}</p>
+              </ng-container>
+            </ul>
           </ng-container>
         </ul>
       </ng-container>

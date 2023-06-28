@@ -12,8 +12,4 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     this.playerDatas = null;
   }
-
-  private strengthCalculator() {
-
-  }
 }

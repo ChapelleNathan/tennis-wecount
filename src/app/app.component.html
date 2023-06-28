@@ -8,7 +8,7 @@
       <ng-container *ngIf="player1 && player2 else noData">
           <ul>
             <ng-container *ngFor="let result of gameResults">
-              <p class="fw-medium">{{ result }}</p>
+              <li class="fw-medium">{{ result }}</li>
             </ng-container>
           </ul>
       </ng-container>

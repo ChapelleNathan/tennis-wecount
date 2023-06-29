@@ -40,8 +40,8 @@ export class AppComponent implements OnInit {
 
   private initmatch(player1: PlayerInterface, player2: PlayerInterface) {
     this.match = new MatchInterface();
-    this.match.players.push({ player: player1, matchPoint: 0 });
-    this.match.players.push({ player: player2, matchPoint: 0 });
+    this.match.players.push(player1);
+    this.match.players.push(player2);
     this.matchLogs = [];
     this.ballCount = 0;
     this.currentGame = undefined;
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
     this.gameIndex = 0;
   }
 
-  private play(match: MatchInterface, setNumber: number): void {
+  private play(match: MatchInterface, setNumber: number = 3): void {
     //initialisation de la partie
     let player1 = match.players[0];
     let player2 = match.players[1];
@@ -89,14 +89,14 @@ export class AppComponent implements OnInit {
   }
 
   private playSet(
-    player1: {player: PlayerInterface, matchPoint: number},
-    player2: {player: PlayerInterface, matchPoint: number},
+    player1: PlayerInterface,
+    player2: PlayerInterface,
   ) {
     //On initialise le set
     //Si on a pas ou que le précédent est terminé de set on l'initialise
 
     if (this.currentSet === undefined){
-      this.newSet(player1.player, player2.player);
+      this.newSet(player1, player2);
       this.setIndex = this.match.sets.length - 1;
       this.currentSet = this.match.sets[this.setIndex];
     }        
@@ -104,14 +104,14 @@ export class AppComponent implements OnInit {
   }
 
   private playGame(
-    player1: {player: PlayerInterface, setPoint: number},
-    player2: {player: PlayerInterface, setPoint: number},
+    player1: PlayerInterface,
+    player2: PlayerInterface,
     ) {
 
       //On initialise le jeu.
       //si on a pas de jeu ou que le précédent est terminé on l'initialise on l'initialise
       if(this.currentGame === undefined) {
-        this.newGame(player1.player, player2.player, this.currentSet)
+        this.newGame(player1, player2, this.currentSet)
         this.currentGame = this.currentSet.games[this.gameIndex];
       }
 
@@ -120,32 +120,32 @@ export class AppComponent implements OnInit {
   
 
   private onePoint(
-    shooter: {player: PlayerInterface, score: number},
-    opponent: {player: PlayerInterface, score: number},
+    shooter: PlayerInterface,
+    opponent: PlayerInterface,
     ){
        //on lance le dé pour savoir si il réussi son coup
     let roll = this.diceRoll();
-    if (shooter.player.strength > roll) {
+    if (shooter.strength > roll) {
       //si il réussi son coup, il l'envoi à opponent qui deviens le shooter
       this.onePoint(opponent, shooter);
     } else {
       //si il rate on incrémente le score de opponent de 1
-      opponent.score++;
+      opponent.gameScore++;
       this.matchLogs.push(
         'Point n°' +
           (this.ballCount + 1) +
           ' : ' +
-          opponent.player.name +
+          opponent.name +
           ' a marqué contre ' +
-          shooter.player.name
+          shooter.name
       );
 
       //Si opponent gagne le set on incrémente matchPoint de 1
       if (this.hasWonGame(opponent, shooter)) {
         this.match.sets[this.setIndex].players.forEach((player) => {
-          if (player.player.id == opponent.player.id) {
+          if (player.id == opponent.id) {
             player.setPoint++;
-            console.log(player.player.name + ' vs ' + opponent.player.name);
+            console.log(player.name + ' vs ' + opponent.name);
           }
         });
       }
@@ -153,17 +153,17 @@ export class AppComponent implements OnInit {
   }
 
   private hasWonGame(
-    winner: { player: PlayerInterface; score: number },
-    looser: { player: PlayerInterface; score: number },
+    winner: PlayerInterface,
+    looser: PlayerInterface,
   ): boolean {
 
-    if (winner.score < 4) {
+    if (winner.gameScore < 4) {
       return false;
-    } else if (this.gameIndex === 11 && winner.score < 7) {
+    } else if (this.gameIndex === 11 && winner.gameScore < 7) {
       return false;
     }
 
-    if (winner.score > looser.score + 1) {
+    if (winner.gameScore > looser.gameScore + 1) {
       return true;
     }
 
@@ -198,15 +198,15 @@ export class AppComponent implements OnInit {
 
   private newSet(player1: PlayerInterface, player2: PlayerInterface) {
     let set = new SetInterface();
-    set.players.push({ player: player1, setPoint: 0 });
-    set.players.push({ player: player2, setPoint: 0 });
+    set.players.push(player1);
+    set.players.push(player2);
     this.match.sets.push(set);
   }
 
   private newGame(player1: PlayerInterface, player2: PlayerInterface, currentSet: SetInterface) {
     let game = new GameInterface();
-    game.players.push({player: player1, score: 0});
-    game.players.push({player: player2, score: 0});
+    game.players.push(player1);
+    game.players.push(player2);
     currentSet.games.push(game);
   }
 
@@ -217,9 +217,9 @@ export class AppComponent implements OnInit {
   private defineWinner(setIndex: number): void {
     let winner: PlayerInterface;
     if (this.match.players[0].matchPoint === 3) {
-      winner = this.match.players[0].player;
+      winner = this.match.players[0];
     } else if (this.match.players[1].matchPoint === 3) {
-      winner = this.match.players[1].player;
+      winner = this.match.players[1];
     } else {
       winner = null;
     }

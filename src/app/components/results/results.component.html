@@ -18,7 +18,7 @@
         <tbody>
             <ng-container *ngFor="let player of matchResults.match.players ; index as i">
                 <tr>
-                    <th>{{ player.player.name }}</th>
+                    <th>{{ player.name }}</th>
                     <ng-container *ngFor="let set of matchResults.match.sets">
                         <ng-container *ngIf="(matchResults.lastSet !== set) || matchResults.winner else test">
                             <td>{{ set.players[i].setPoint }}</td>

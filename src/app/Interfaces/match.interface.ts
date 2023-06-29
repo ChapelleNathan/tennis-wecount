@@ -2,7 +2,7 @@ import { PlayerInterface } from "./player.interface";
 import { SetInterface } from "./set.interface";
 
 export class MatchInterface {
-    players: Array<{player: PlayerInterface, matchPoint: number}>;
+    players: Array<PlayerInterface>;
     sets: Array<SetInterface>;
 
     constructor(){

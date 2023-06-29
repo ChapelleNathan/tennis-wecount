@@ -83,9 +83,7 @@ export class AppComponent implements OnInit {
       //TODO faire une fonction pour faire completer un Set
       this.playSet(player1, player2);
       this.ballCount++;
-    }
-    console.log(this.currentSet);
-    
+    }    
   }
 
   private playSet(
@@ -145,9 +143,11 @@ export class AppComponent implements OnInit {
         this.match.sets[this.setIndex].players.forEach((player) => {
           if (player.id == opponent.id) {
             player.setPoint++;
-            console.log(player.name + ' vs ' + opponent.name);
           }
         });
+      }
+      if (this.hasWonSet(opponent, shooter)) {
+
       }
     }
   }
@@ -171,8 +171,8 @@ export class AppComponent implements OnInit {
   }
 
   private hasWonSet(
-    winner: { player: PlayerInterface; setPoint: number },
-    looser: { player: PlayerInterface; setPoint: number },
+    winner: PlayerInterface,
+    looser: PlayerInterface,
   ): boolean {
     if (winner.setPoint < 6) {
       return false;
@@ -184,7 +184,7 @@ export class AppComponent implements OnInit {
         'match ' +
           (this.setIndex + 1) +
           ' ' +
-          winner.player.name +
+          winner.name +
           ' a gagner le point ' +
           winner.setPoint +
           ' points a ' +

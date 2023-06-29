@@ -25,6 +25,9 @@
     </ul>
   </section>
   <section>
+    <ng-container *ngIf="winner">
+      {{ winner.name }} a gagné le match
+    </ng-container>
     <!--<app-results [matchResults]="matchResults" ></app-results>-->
   </section>
 </main>

@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   currentGame: GameInterface;
   setIndex : number;
   gameIndex: number;
+  winner: PlayerInterface;
   matchResults: {
     match: MatchInterface;
     winner: PlayerInterface | null;
@@ -45,6 +46,7 @@ export class AppComponent implements OnInit {
     this.ballCount = 0;
     this.currentGame = undefined;
     this.currentSet = undefined
+    this.winner = undefined;
   }
 
   private play(match: MatchInterface): void {
@@ -54,60 +56,24 @@ export class AppComponent implements OnInit {
     this.currentSet = this.newSet(player1, player2);
     this.currentGame = this.newGame(player1, player2);
     //on boucle pour avoir le nombre d'échange de coup souhaité
-    for (let i = 0; i < 150; i++) {
-      //On vérifie si l'un des joueurs n'a pas remporté 3 sets
-      /* if (
-        this.match.players[0].matchPoint === 3 ||
-        this.match.players[1].matchPoint === 3
-      ) {
-        this.match.sets = this.match.sets.slice(0, setIndex + 1);
-        this.defineWinner(setIndex);
-        return;
-      }*/
+    for (let i = 0; i < 300; i++) {
 
-      //On vérifie si le nombre de set gagné est supérieur a l'index du set actuel pour pouvoir passer au set suivant
-      /*if (
-        this.match.players[0].matchPoint + this.match.players[1].matchPoint >
-        setIndex
-      ) {
-        setIndex++;
-        if (setIndex > 2) {
-          this.defineWinner(setIndex);
-          return;
+      this.onePoint(player1,player2)
+      match.players.forEach(player => {
+        if (this.hasWonMatch(player)) {
+          this.winner = player;
         }
-        currentSet = this.match.sets[setIndex];
-      }*/
-
-      //TODO faire une fonction pour faire completer un Set
-      this.playSet(player1, player2);
+      });
       this.ballCount++;
     }
-    console.log(match.sets[0].games, match.sets);
-    
+    console.log(match);
   }
-
-  private playSet(
-    player1: PlayerInterface,
-    player2: PlayerInterface,
-  ) {
-         
-    this.playGame(player1, player2)
-  }
-
-  private playGame(
-    player1: PlayerInterface,
-    player2: PlayerInterface,
-    ) {
-
-
-      this.onePoint(player1, player2);
-    }
-  
 
   private onePoint(
     shooter: PlayerInterface,
     opponent: PlayerInterface,
     ){
+      let winner: PlayerInterface | null;
        //on lance le dé pour savoir si il réussi son coup
     let roll = this.diceRoll();
     if (shooter.strength > roll) {
@@ -133,10 +99,15 @@ export class AppComponent implements OnInit {
     winner: PlayerInterface,
     looser: PlayerInterface,
   ): void {
-    if (winner.gameScore < 4) {
-      return;
-    } else if (this.gameIndex >= 11 && winner.gameScore < 7) {
-      return;
+    if (this.currentSet.games.length - 1 < 11)
+    {
+      if (winner.gameScore < 4) {
+        return;
+      }
+    } else {
+      if (winner.gameScore < 7) {
+        return;
+      }
     }
 
     if (winner.gameScore > looser.gameScore + 1) {
@@ -172,10 +143,19 @@ export class AppComponent implements OnInit {
     if (winner.setScore < 6) {
       return;
     }
-
     if (winner.setScore > looser.setScore + 1) {  
       winner.matchPoint++;
-
+      //TODO supprimer matchDebug
+      this.matchDebug.push(
+        'match ' +
+          (this.match.sets.length) +
+          ' ' +
+          winner.name +
+          ' a gagner le set ' +
+          winner.setScore +
+          ' points a ' +
+          looser.setScore
+      );
       this.currentSet.results = [
         {
           player: this.match.players[0],
@@ -190,20 +170,18 @@ export class AppComponent implements OnInit {
         player.setScore = 0;
       });
       this.currentSet = this.newSet(this.match.players[0], this.match.players[1]);
-      //TODO supprimer matchDebug
-      this.matchDebug.push(
-        'match ' +
-          (this.setIndex + 1) +
-          ' ' +
-          winner.name +
-          ' a gagner le set ' +
-          winner.setScore +
-          ' points a ' +
-          looser.setScore
-      );
     }
-
     return;
+  }
+
+  private hasWonMatch(
+    winner: PlayerInterface,
+  ): boolean {
+    if (winner.matchPoint < 3) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   private newSet(player1: PlayerInterface, player2: PlayerInterface): SetInterface {

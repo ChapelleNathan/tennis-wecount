@@ -27,7 +27,6 @@
                 </tr>
                 <!--On prend le dernier set pour formater les données-->
                 <ng-template #test>
-                    last set
                     <ng-container *ngIf="
                         gameResults.lastSet.players[0].score - gameResults.lastSet.players[1].score > 1 ||
                         gameResults.lastSet.players[1].score - gameResults.lastSet.players[0].score > 1 else notOver">

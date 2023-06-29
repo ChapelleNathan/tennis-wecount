@@ -14,12 +14,11 @@
       </ng-container>
     </div>
     <!--TODO erase this part when over-->
-    <ul>
+    <ul class="text-start">
       <ng-container *ngIf="game">
-        <ng-container  *ngFor="let set of game.sets; index as i">
+        <ng-container  *ngFor="let gameMessage of gameDebug">
           <li>
-            <p class="text-start">game {{ i + 1 }} : {{ game.players[0].player.name }} a marqué <span class="fw-bold">{{ set.players[0].score }}</span>
-              points {{ game.players[1].player.name }} a marqué <span class="fw-bold">{{ set.players[1].score }}</span> points</p>
+            <p>{{ gameMessage }}</p>
           </li>
         </ng-container>
       </ng-container>

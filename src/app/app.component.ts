@@ -11,8 +11,9 @@ import { find } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   gameLogs: Array<string>;
+  gameDebug: Array<string> = [];
   game: GameInterface;
-  gameResults: {game: GameInterface, winner: PlayerInterface | null}
+  gameResults: {game: GameInterface, winner: PlayerInterface | null, lastSet: SetInterface}
 
   ngOnInit(): void {
     this.gameLogs = [];
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   public playerDatasEvent($event): void {
     let player1 = $event[0];
     let player2 = $event[1];
+    this.gameDebug = [];
     let setNumber = 5;
     if (this.game) {
       this.resetGame();
@@ -58,14 +60,14 @@ export class AppComponent implements OnInit {
     }
     let currentSet: SetInterface = this.game.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 25; i++) {
       //On vérifie si l'un des joueurs n'a pas remporté 3 sets
       if (
         this.game.players[0].setPoint === 3 ||
         this.game.players[1].setPoint === 3
       ) {
         this.game.sets = this.game.sets.slice(0, setIndex + 1);
-        this.defineWinner();
+        this.defineWinner(setIndex);
         return;
       }
 
@@ -76,7 +78,7 @@ export class AppComponent implements OnInit {
       ) {
         setIndex++;
         if (setIndex > 4) {
-          this.defineWinner();
+          this.defineWinner(setIndex);
           return;
         }
         currentSet = this.game.sets[setIndex];
@@ -90,7 +92,7 @@ export class AppComponent implements OnInit {
       );
     }
     this.game.sets = this.game.sets.slice(0, setIndex + 1);
-    this.defineWinner();
+    this.defineWinner(setIndex);
   }
 
   private newPoint(
@@ -157,6 +159,9 @@ export class AppComponent implements OnInit {
     }
 
     if (winner.score > looser.score + 1) {
+      //TODO supprimer gameDebug
+      console.log('winner : ',winner.score, 'looser : ', looser.score);
+      this.gameDebug.push('Game ' + (setIndex + 1) + ' ' + winner.player.name + ' a gagner le point ' + winner.score + ' points a ' + looser.score);
       return true;
     }
 
@@ -179,7 +184,7 @@ export class AppComponent implements OnInit {
     this.gameLogs = [];
   }
 
-  private defineWinner(): void {
+  private defineWinner(setIndex: number): void {
     let winner: PlayerInterface;
     if (this.game.players[0].setPoint === 3) {
       winner = this.game.players[0].player;
@@ -188,6 +193,6 @@ export class AppComponent implements OnInit {
     } else {
       winner = null;
     }
-    this.gameResults = {game: this.game, winner: winner};
+    this.gameResults = {game: this.game, winner: winner, lastSet: this.game.sets[setIndex]};
   }
 }

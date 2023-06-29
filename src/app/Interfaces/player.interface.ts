@@ -6,4 +6,10 @@ export class PlayerInterface {
     gameScore: number;
     setPoint: number;
     matchPoint: number;
+
+    constructor(){
+        this.gameScore = 0;
+        this.setPoint = 0;
+        this.matchPoint = 0;
+    }
 }

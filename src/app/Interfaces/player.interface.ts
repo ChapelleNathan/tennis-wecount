@@ -4,12 +4,12 @@ export class PlayerInterface {
     strength: number;
     id: number;
     gameScore: number;
-    setPoint: number;
+    setScore: number;
     matchPoint: number;
 
     constructor(){
         this.gameScore = 0;
-        this.setPoint = 0;
+        this.setScore = 0;
         this.matchPoint = 0;
     }
 }

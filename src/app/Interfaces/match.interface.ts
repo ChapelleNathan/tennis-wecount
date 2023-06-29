@@ -9,5 +9,6 @@ export class MatchInterface {
     constructor(){
         this.players = [];
         this.sets = [];
+        this.results = [];
     }
 }

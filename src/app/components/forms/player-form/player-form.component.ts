@@ -33,7 +33,7 @@ export class PlayerFormComponent implements OnInit {
       this.strengthCalculator(player)
       this.idGenerator(player)
       player.gameScore = 0;
-      player.setPoint = 0;
+      player.setScore = 0;
       player.matchPoint = 0;
     });    
     this.playerFormEvent.emit(players);

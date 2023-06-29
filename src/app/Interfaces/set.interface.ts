@@ -4,10 +4,10 @@ import { PlayerInterface } from "./player.interface";
 export class SetInterface {
     players: Array<PlayerInterface>;
     games: Array<GameInterface>;
-    result: Array<{player: PlayerInterface, setScore: number}>
+    results: Array<{player: PlayerInterface, setScore: number}>
     constructor() {
         this.players = [];
         this.games = [];
-        this.result = [];
+        this.results = [];
     }
 }

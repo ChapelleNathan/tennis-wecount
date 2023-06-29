@@ -1,43 +1,43 @@
-<ng-container *ngIf="gameResults">
+<ng-container *ngIf="matchResults">
     <table class="table">
         <thead>
             <tr>
                 <th>
                     <p>
                         Résultat :
-                        <ng-container *ngIf="gameResults.winner else noWinner">
-                            {{ gameResults.winner.name }} à remporter la partie !
+                        <ng-container *ngIf="matchResults.winner else noWinner">
+                            {{ matchResults.winner.name }} à remporter la partie !
                         </ng-container>
                     </p>
                 </th>
-                <ng-container *ngFor="let set of gameResults.game.sets; index as i">
+                <ng-container *ngFor="let set of matchResults.match.sets; index as i">
                     <th>Set {{ i + 1 }}</th>
                 </ng-container>
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let player of gameResults.game.players ; index as i">
+            <ng-container *ngFor="let player of matchResults.match.players ; index as i">
                 <tr>
                     <th>{{ player.player.name }}</th>
-                    <ng-container *ngFor="let set of gameResults.game.sets">
-                        <ng-container *ngIf="(gameResults.lastSet !== set) || gameResults.winner else test">
-                            <td>{{ set.players[i].score }}</td>
+                    <ng-container *ngFor="let set of matchResults.match.sets">
+                        <ng-container *ngIf="(matchResults.lastSet !== set) || matchResults.winner else test">
+                            <td>{{ set.players[i].setPoints }}</td>
                         </ng-container>
                     </ng-container>
                 </tr>
                 <!--On prend le dernier set pour formater les données-->
                 <ng-template #test>
                     <ng-container *ngIf="
-                        gameResults.lastSet.players[0].score - gameResults.lastSet.players[1].score > 1 ||
-                        gameResults.lastSet.players[1].score - gameResults.lastSet.players[0].score > 1 else notOver">
-                        <td>{{ gameResults.lastSet.players[i].score }}</td>
+                        matchResults.lastSet.players[0].setPoints - matchResults.lastSet.players[1].setPoints > 1 ||
+                        matchResults.lastSet.players[1].setPoints - matchResults.lastSet.players[0].setPoints > 1 else notOver">
+                        <td>{{ matchResults.lastSet.players[i].setPoints }}</td>
                     </ng-container>
 
                     <!--Si le set n'est pas terminé on vérifie si c'est le set 5 ou non-->
                     <ng-template #notOver>
                         <ng-container
-                            *ngIf="gameResults.lastSet.players[0].score === gameResults.lastSet.players[1].score; else notSameScore">
-                            <td>{{ gameResults.lastSet.players[i].score }}</td>
+                            *ngIf="matchResults.lastSet.players[0].setPoints === matchResults.lastSet.players[1].setPoints; else notSameScore">
+                            <td>{{ matchResults.lastSet.players[i].setPoints }}</td>
                         </ng-container>
                         <ng-template #notSameScore>
                             <!--On vérifie si le dernier set est le set 5 qui a des règles différentes-->
@@ -45,18 +45,18 @@
                                 <!--Si les points sont strictement en dessous de 4 pas besoins de formatage-->
                                 <ng-container
                                     *ngIf="
-                                        gameResults.lastSet.players[0].score < 4 && gameResults.lastSet.players[1].score < 4; else avantage">
-                                    <td>{{ gameResults.lastSet.players[i].score }}</td>
+                                        matchResults.lastSet.players[0].setPoints < 4 && matchResults.lastSet.players[1].setPoints < 4; else avantage">
+                                    <td>{{ matchResults.lastSet.players[i].setPoints }}</td>
                                 </ng-container>
                             </ng-container>
 
                             <ng-template #avantage>
                                 <!--On vérifie si joueur 1 et le joueur de la boucle -->
-                                <ng-container *ngIf="gameResults.lastSet.players[0] === gameResults.lastSet.players[i]">
+                                <ng-container *ngIf="matchResults.lastSet.players[0] === matchResults.lastSet.players[i]">
                                     jouer 1
                                     <!--Si joueur 1 à plus de points que joueur 2, on lui donne Av sinon - -->
                                     <ng-container
-                                        *ngIf="gameResults.lastSet.players[0].score > gameResults.lastSet.players[1].score; else player2Av">
+                                        *ngIf="matchResults.lastSet.players[0].setPoints > matchResults.lastSet.players[1].setPoints; else player2Av">
                                         <td>AV</td>
                                     </ng-container>
                                     <ng-template #player2Av>
@@ -64,11 +64,11 @@
                                     </ng-template>
                                 </ng-container>
                                 <!--On vérifie si joueur 2 et le joueur de la boucle -->
-                                <ng-container *ngIf="gameResults.lastSet.players[1] === gameResults.lastSet.players[i]">
+                                <ng-container *ngIf="matchResults.lastSet.players[1] === matchResults.lastSet.players[i]">
                                     joueur 2
                                     <!--Si joueur 2 à plus de points que joueur 1, on lui donne Av sinon - -->
                                     <ng-container
-                                        *ngIf="gameResults.lastSet.players[1].score > gameResults.lastSet.players[0].score; else player1Av">
+                                        *ngIf="matchResults.lastSet.players[1].setPoints > matchResults.lastSet.players[0].setPoints; else player1Av">
                                         <td>AV</td>
                                     </ng-container>
                                     <ng-template #player1Av>

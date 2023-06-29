@@ -3,6 +3,7 @@ import { PlayerInterface } from './Interfaces/player.interface';
 import { GameInterface } from './Interfaces/game.interface';
 import { SetInterface } from './Interfaces/set.interface';
 import { find } from 'rxjs';
+import { MatchInterface } from './Interfaces/match.interface';
 
 @Component({
   selector: 'app-root',
@@ -10,94 +11,83 @@ import { find } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  gameLogs: Array<string>;
-  gameDebug: Array<string> = [];
-  game: GameInterface;
-  gameResults: {game: GameInterface, winner: PlayerInterface | null, lastSet: SetInterface}
+  matchLogs: Array<string>;
+  matchDebug: Array<string> = [];
+  match: MatchInterface;
+  matchResults: {match: MatchInterface, winner: PlayerInterface | null, lastSet: SetInterface}
 
   ngOnInit(): void {
-    this.gameLogs = [];
+    this.matchLogs = [];
   }
 
   public playerDatasEvent($event): void {
     let player1 = $event[0];
     let player2 = $event[1];
-    this.gameDebug = [];
+    this.matchDebug = [];
     let setNumber = 5;
-    if (this.game) {
-      this.resetGame();
-    }
-    this.play(player1, player2, setNumber);
+    //this.play(player1, player2, setNumber);
+    this.initmatch(player1, player2)
+    console.log(this.match);
   }
 
-  private initGame(player1: PlayerInterface, player2: PlayerInterface) {
-    this.game = new GameInterface();
-    this.game = {
-      players: [
-        {
-          player: player1,
-          setPoint: 0,
-        },
-        {
-          player: player2,
-          setPoint: 0,
-        },
-      ],
-      sets: [],
-    };
+  private initmatch(player1: PlayerInterface, player2: PlayerInterface) {
+    this.match = new MatchInterface();
+    this.match.players.push({player: player1, matchPoint: 0});
+    this.match.players.push({player: player2, matchPoint: 0});
   }
 
   private play(
-    player1: PlayerInterface,
-    player2: PlayerInterface,
-    setNumber: number
+    match: MatchInterface
   ): void {
+    let player1 = match.players[0].player;
+    let player2 = match.players[1].player;
+    let setNumber = 3;
     let setIndex = 0;
     //initialisation de la partie
-    this.initGame(player1, player2);
     for (let i = 0; i < setNumber; i++) {
-      this.newSet();
+      this.newSet(player1, player2);
     }
-    let currentSet: SetInterface = this.game.sets[setIndex];
+    let currentSet: SetInterface = this.match.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
     for (let i = 0; i < 25; i++) {
       //On vérifie si l'un des joueurs n'a pas remporté 3 sets
       if (
-        this.game.players[0].setPoint === 3 ||
-        this.game.players[1].setPoint === 3
+        this.match.players[0].matchPoint === 3 ||
+        this.match.players[1].matchPoint === 3
       ) {
-        this.game.sets = this.game.sets.slice(0, setIndex + 1);
+        this.match.sets = this.match.sets.slice(0, setIndex + 1);
         this.defineWinner(setIndex);
         return;
       }
 
       //On vérifie si le nombre de set gagné est supérieur a l'index du set actuel pour pouvoir passer au set suivant
       if (
-        this.game.players[0].setPoint + this.game.players[1].setPoint >
+        this.match.players[0].matchPoint + this.match.players[1].matchPoint >
         setIndex
       ) {
         setIndex++;
-        if (setIndex > 4) {
+        if (setIndex > 2) {
           this.defineWinner(setIndex);
           return;
         }
-        currentSet = this.game.sets[setIndex];
+        currentSet = this.match.sets[setIndex];
       }
 
-      this.newPoint(
+      //TODO faire une fonction pour faire completer un Set
+      this.playSet(
         currentSet.players[0],
         currentSet.players[1],
         i + 1,
         setIndex
       );
     }
-    this.game.sets = this.game.sets.slice(0, setIndex + 1);
+    this.match.sets = this.match.sets.slice(0, setIndex + 1);
     this.defineWinner(setIndex);
   }
 
-  private newPoint(
-    shooter: { player: PlayerInterface; score: number },
-    opponent: { player: PlayerInterface; score: number },
+  private playSet(
+    shooter: { player: PlayerInterface; setPoints: number },
+    opponent: { player: PlayerInterface; setPoints: number },
     pointNumber: number,
     setIndex: number
   ) {
@@ -106,11 +96,11 @@ export class AppComponent implements OnInit {
 
     if (shooter.player.strength > roll) {
       //si il réussi son coup, il l'envoi à opponent qui deviens le shooter
-      this.newPoint(opponent, shooter, pointNumber, setIndex);
+      this.playSet(opponent, shooter, pointNumber, setIndex);
     } else {
       //si il rate on incrémente le score de opponent de 1
-      opponent.score++;
-      this.gameLogs.push(
+      opponent.setPoints++;
+      this.matchLogs.push(
         'Point n°' +
           pointNumber +
           ' : ' +
@@ -119,49 +109,39 @@ export class AppComponent implements OnInit {
           shooter.player.name
       );
 
-      //Si opponent gagne le set on incrémente setPoint de 1
+      //Si opponent gagne le set on incrémente matchPoint de 1
       if (this.hasWonSet(opponent, shooter, setIndex)) {
-        this.game.players.forEach((player) => {
+        this.match.players.forEach((player) => {
           if (player.player == opponent.player) {
-            player.setPoint++;
+            player.matchPoint++;
           }
         });
       }
     }
   }
 
-  private newSet() {
+  private newSet(player1: PlayerInterface, player2: PlayerInterface) {
     let set = new SetInterface();
-    set = {
-      players: [
-        {
-          player: this.game.players[0].player,
-          score: 0,
-        },
-        {
-          player: this.game.players[1].player,
-          score: 0,
-        },
-      ],
-    };
-    this.game.sets.push(set);
+    set.players.push({player: player1, setPoints: 0})
+    set.players.push({player: player2, setPoints: 0})
+    this.match.sets.push(set);
   }
 
   private hasWonSet(
-    winner: { player: PlayerInterface; score: number },
-    looser: { player: PlayerInterface; score: number },
+    winner: { player: PlayerInterface; setPoints: number },
+    looser: { player: PlayerInterface; setPoints: number },
     setIndex
   ): boolean {
-    if (winner.score < 4) {
+    if (winner.setPoints < 4) {
       return false;
-    } else if (setIndex === 4 && winner.score < 7) {
+    } else if (setIndex === 4 && winner.setPoints < 7) {
       return false;
     }
 
-    if (winner.score > looser.score + 1) {
-      //TODO supprimer gameDebug
-      console.log('winner : ',winner.score, 'looser : ', looser.score);
-      this.gameDebug.push('Game ' + (setIndex + 1) + ' ' + winner.player.name + ' a gagner le point ' + winner.score + ' points a ' + looser.score);
+    if (winner.setPoints > looser.setPoints + 1) {
+      //TODO supprimer matchDebug
+      console.log('winner : ',winner.setPoints, 'looser : ', looser.setPoints);
+      this.matchDebug.push('match ' + (setIndex + 1) + ' ' + winner.player.name + ' a gagner le point ' + winner.setPoints + ' points a ' + looser.setPoints);
       return true;
     }
 
@@ -172,27 +152,15 @@ export class AppComponent implements OnInit {
     return Math.round(Math.random() * 100 + 1);
   }
 
-  private resetSet(): void {
-    this.game.sets.forEach((set) => {
-      set.players[0].score = 0;
-      set.players[1].score = 0;
-    });
-  }
-
-  private resetGame(): void {
-    this.resetSet();
-    this.gameLogs = [];
-  }
-
   private defineWinner(setIndex: number): void {
     let winner: PlayerInterface;
-    if (this.game.players[0].setPoint === 3) {
-      winner = this.game.players[0].player;
-    } else if (this.game.players[1].setPoint === 3) {
-      winner = this.game.players[1].player;
+    if (this.match.players[0].matchPoint === 3) {
+      winner = this.match.players[0].player;
+    } else if (this.match.players[1].matchPoint === 3) {
+      winner = this.match.players[1].player;
     } else {
       winner = null;
     }
-    this.gameResults = {game: this.game, winner: winner, lastSet: this.game.sets[setIndex]};
+    this.matchResults = {match: this.match, winner: winner, lastSet: this.match.sets[setIndex]};
   }
 }

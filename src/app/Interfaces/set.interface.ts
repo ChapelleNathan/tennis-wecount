@@ -1,14 +1,12 @@
+import { GameInterface } from "./game.interface";
 import { PlayerInterface } from "./player.interface";
 
 export class SetInterface {
-    players: [
-        player1 : {
-            player : PlayerInterface,
-            score: number,
-        },
-        player2: {
-            player: PlayerInterface,
-            score: number,
-        },
-    ]
+    players: Array<{player: PlayerInterface, setPoints: number}>;
+    games: Array<GameInterface>;
+
+    constructor() {
+        this.players = [];
+        this.games = [];
+    }
 }

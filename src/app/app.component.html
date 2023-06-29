@@ -5,9 +5,9 @@
   <app-player-form (playerFormEvent)="playerDatasEvent($event)"></app-player-form>
   <section class="stats d-flex flex-column gap-3">
     <div class="game col-8 border rounded-3 offset-2 overflow-y-scroll text-start p-4 lh-lg">
-      <ng-container *ngIf="game else noData">
+      <ng-container *ngIf="match else noData">
         <ul>
-          <ng-container *ngFor="let result of gameLogs">
+          <ng-container *ngFor="let result of matchLogs">
             <li class="fw-medium">{{ result }}</li>
           </ng-container>
         </ul>
@@ -15,8 +15,8 @@
     </div>
     <!--TODO erase this part when over-->
     <ul class="text-start">
-      <ng-container *ngIf="game">
-        <ng-container  *ngFor="let gameMessage of gameDebug">
+      <ng-container *ngIf="match">
+        <ng-container  *ngFor="let gameMessage of matchDebug">
           <li>
             <p>{{ gameMessage }}</p>
           </li>
@@ -25,7 +25,7 @@
     </ul>
   </section>
   <section>
-    <app-results [gameResults]="gameResults" ></app-results>
+    <app-results [matchResults]="matchResults" ></app-results>
   </section>
 </main>
 

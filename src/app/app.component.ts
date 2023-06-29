@@ -12,6 +12,7 @@ import { find } from 'rxjs';
 export class AppComponent implements OnInit {
   gameLogs: Array<string>;
   game: GameInterface;
+  gameResults: {game: GameInterface, winner: PlayerInterface | null}
 
   ngOnInit(): void {
     this.gameLogs = [];
@@ -44,42 +45,59 @@ export class AppComponent implements OnInit {
     };
   }
 
-  private play(player1: PlayerInterface, player2: PlayerInterface, setNumber: number): void {
+  private play(
+    player1: PlayerInterface,
+    player2: PlayerInterface,
+    setNumber: number
+  ): void {
     let setIndex = 0;
     //initialisation de la partie
     this.initGame(player1, player2);
-    for(let i = 0; i < setNumber; i++){
+    for (let i = 0; i < setNumber; i++) {
       this.newSet();
     }
     let currentSet: SetInterface = this.game.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
-    for (let i = 0; i < 15; i++) {
-
+    for (let i = 0; i < 150; i++) {
       //On vérifie si l'un des joueurs n'a pas remporté 3 sets
-      if(this.game.players[0].setPoint === 3 || this.game.players[1].setPoint === 3){
-        this.game.sets = this.game.sets.slice(0, setIndex + 1)
+      if (
+        this.game.players[0].setPoint === 3 ||
+        this.game.players[1].setPoint === 3
+      ) {
+        this.game.sets = this.game.sets.slice(0, setIndex + 1);
+        this.defineWinner();
         return;
       }
 
       //On vérifie si le nombre de set gagné est supérieur a l'index du set actuel pour pouvoir passer au set suivant
-      if(this.game.players[0].setPoint + this.game.players[1].setPoint > setIndex) {    
-        setIndex++;        
-        if(setIndex > 4){
+      if (
+        this.game.players[0].setPoint + this.game.players[1].setPoint >
+        setIndex
+      ) {
+        setIndex++;
+        if (setIndex > 4) {
+          this.defineWinner();
           return;
         }
         currentSet = this.game.sets[setIndex];
-      } 
+      }
 
-      this.newPoint(currentSet.players[0], currentSet.players[1], i + 1, setIndex);
+      this.newPoint(
+        currentSet.players[0],
+        currentSet.players[1],
+        i + 1,
+        setIndex
+      );
     }
-    this.game.sets = this.game.sets.slice(0, setIndex + 1)
+    this.game.sets = this.game.sets.slice(0, setIndex + 1);
+    this.defineWinner();
   }
 
   private newPoint(
     shooter: { player: PlayerInterface; score: number },
     opponent: { player: PlayerInterface; score: number },
     pointNumber: number,
-    setIndex: number,
+    setIndex: number
   ) {
     //on lance le dé pour savoir si il réussi son coup
     let roll = this.diceRoll();
@@ -91,15 +109,20 @@ export class AppComponent implements OnInit {
       //si il rate on incrémente le score de opponent de 1
       opponent.score++;
       this.gameLogs.push(
-        'Point n°' + pointNumber + ' : ' + opponent.player.name + ' a marqué contre ' + shooter.player.name
+        'Point n°' +
+          pointNumber +
+          ' : ' +
+          opponent.player.name +
+          ' a marqué contre ' +
+          shooter.player.name
       );
 
       //Si opponent gagne le set on incrémente setPoint de 1
       if (this.hasWonSet(opponent, shooter, setIndex)) {
-        this.game.players.forEach(player => {
-          if(player.player == opponent.player) {
+        this.game.players.forEach((player) => {
+          if (player.player == opponent.player) {
             player.setPoint++;
-          }          
+          }
         });
       }
     }
@@ -125,10 +148,9 @@ export class AppComponent implements OnInit {
   private hasWonSet(
     winner: { player: PlayerInterface; score: number },
     looser: { player: PlayerInterface; score: number },
-    setIndex,
+    setIndex
   ): boolean {
-    
-    if (winner.score < 4) {      
+    if (winner.score < 4) {
       return false;
     } else if (setIndex === 4 && winner.score < 7) {
       return false;
@@ -155,5 +177,17 @@ export class AppComponent implements OnInit {
   private resetGame(): void {
     this.resetSet();
     this.gameLogs = [];
+  }
+
+  private defineWinner(): void {
+    let winner: PlayerInterface;
+    if (this.game.players[0].setPoint === 3) {
+      winner = this.game.players[0].player;
+    } else if (this.game.players[1].setPoint === 3) {
+      winner = this.game.players[1].player;
+    } else {
+      winner = null;
+    }
+    this.gameResults = {game: this.game, winner: winner};
   }
 }

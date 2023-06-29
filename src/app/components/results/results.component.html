@@ -2,17 +2,24 @@
     <table class="table">
         <thead>
             <tr>
-                <th></th>
-                <ng-container *ngFor="let set of gameResults.sets; index as i">
+                <th>
+                    <p>
+                        Résultat :
+                        <ng-container *ngIf="gameResults.winner else noWinner">
+                            {{ gameResults.winner.name }} à remporter la partie !
+                        </ng-container>
+                    </p>
+                </th>
+                <ng-container *ngFor="let set of gameResults.game.sets; index as i">
                     <th>Set {{ i + 1 }}</th>
                 </ng-container>
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let player of gameResults.players ; index as i">
+            <ng-container *ngFor="let player of gameResults.game.players ; index as i">
                 <tr>
                     <th>{{ player.player.name }}</th>
-                    <ng-container *ngFor="let set of gameResults.sets">
+                    <ng-container *ngFor="let set of gameResults.game.sets">
                         <th>{{ set.players[i].score }}</th>
                     </ng-container>
                 </tr>
@@ -20,3 +27,7 @@
         </tbody>
     </table>
 </ng-container>
+
+<ng-template #noWinner>
+    Jeu en cours, pas de vainqueur
+</ng-template>

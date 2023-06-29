@@ -32,7 +32,6 @@ export class PlayerFormComponent implements OnInit {
     players.forEach(player => {
       this.strengthCalculator(player)
       this.idGenerator(player)
-      player.setScore = 0;
     });    
     this.playerFormEvent.emit(players);
   }

@@ -9,8 +9,6 @@ import { SetInterface } from './Interfaces/set.interface';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  player1: PlayerInterface;
-  player2: PlayerInterface;
   gameLogs: Array<string>;
   game: GameInterface;
 
@@ -21,42 +19,72 @@ export class AppComponent implements OnInit {
   public playerDatasEvent($event): void {
     let player1 = $event[0];
     let player2 = $event[1];
-    this.resetGame();
+    if(this.game) {this.resetGame();}
     this.play(player1, player2);
   }
 
-  private play(player1: PlayerInterface, player2: PlayerInterface):void {
+  private initGame(player1: PlayerInterface, player2: PlayerInterface) {
     this.game = new GameInterface();
     this.game = {
       players: {
-        player1 : player1,
-        player2 : player2,
+        player1: {
+          player: player1,
+          setPoint: 0,
+        },
+        player2: {
+          player: player2,
+          setPoint: 0,
+        },
       },
-      sets : [],
+      sets: [],
     };
+    
   }
 
+  private play(player1: PlayerInterface, player2: PlayerInterface): void {
+    let lastSet: SetInterface;
+    //initialisation de la game
+    this.initGame(player1, player2)
+    //on boucle pour avoir le nombre d'échange de coup souhaité 
+    for (let i = 0; i < 1; i++) {      
+      this.newSet();      
+      let lastSet = this.game.sets[this.game.sets.length - 1];
+      this.newPoint(lastSet.players.player1, lastSet.players.player2);
+    }
+  }
+
+  private newPoint(shooter: {player: PlayerInterface, score: number}, opponent: {player: PlayerInterface, score: number}) {
+    //on lance le dé pour savoir si il réussi son coup
+    let roll = this.diceRoll();
+    if (shooter.player.strength > roll) {
+      //si il réussi son coup, il l'envoi à opponent qui deviens le shooter
+      this.newPoint(opponent, shooter);
+    } else {
+      //si il rate on incrémente le score de opponent de 1
+      opponent.score++;
+      this.gameLogs.push(opponent.player.name + ' a marqué contre ' + shooter.player.name);
+    }
+  }
 
   private newSet() {
     let set = new SetInterface();
     set = {
       players: {
-        player1 : {
-          player: this.game.players.player1,
+        player1: {
+          player: this.game.players.player1.player,
           score: 0,
         },
         player2: {
-          player: this.game.players.player2,
+          player: this.game.players.player2.player,
           score: 0,
-        }
-      }
+        },
+      },
     };
     this.game.sets.push(set);
-    this.resetSet()
   }
 
-  private hasWonSet(winner: PlayerInterface, looser: PlayerInterface): boolean {
-    if(winner.score < 4 ){
+  private hasWonSet(winner: {player: PlayerInterface, score: number}, looser: {player: PlayerInterface, score: number}): boolean {
+    if (winner.score < 4) {
       return false;
     } else if (this.game.sets.length === 4 && winner.score < 7) {
       return false;
@@ -73,9 +101,11 @@ export class AppComponent implements OnInit {
     return Math.round(Math.random() * 100 + 1);
   }
 
-  private resetSet(): void{    
-    this.player1.score = 0;
-    this.player2.score = 0;
+  private resetSet(): void {
+    this.game.sets.forEach(set => {
+      set.players.player1.score = 0;
+      set.players.player2.score = 0;
+    });
   }
 
   private resetGame(): void {

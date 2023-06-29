@@ -1,26 +1,28 @@
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <ng-container *ngFor="let set of gameResults.sets; index as i">
-                <th>Set {{ i + 1 }}</th>
-            </ng-container>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>{{ gameResults.players[0].name }}</th>
-            <ng-container *ngFor="let set of gameResults.sets">
-                <th>{{ set.player1Score }}</th>
-            </ng-container>
-        </tr>
-        <tr>
-            <th>{{ gameResults.players[1].name }}</th>
-            <ng-container *ngFor="let set of gameResults.sets">
-                    <th>{{ set.player2Score }}</th>
-                <ng-template #test>
-                </ng-template>
-            </ng-container>
-        </tr>
-    </tbody>
-</table>
+<ng-container *ngIf="gameResults">
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <ng-container *ngFor="let set of gameResults.sets; index as i">
+                    <th>Set {{ i + 1 }}</th>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>{{ gameResults.players[0].name }}</th>
+                <ng-container *ngFor="let set of gameResults.sets">
+                    <th>{{ set.player1Score }}</th>
+                </ng-container>
+            </tr>
+            <tr>
+                <th>{{ gameResults.players[1].name }}</th>
+                <ng-container *ngFor="let set of gameResults.sets">
+                        <th>{{ set.player2Score }}</th>
+                    <ng-template #test>
+                    </ng-template>
+                </ng-container>
+            </tr>
+        </tbody>
+    </table>
+</ng-container>

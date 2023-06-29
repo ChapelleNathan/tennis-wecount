@@ -54,6 +54,9 @@ export class AppComponent implements OnInit {
     let currentSet: SetInterface = this.game.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
     for (let i = 0; i < 150; i++) {
+      if(this.game.players[0].setPoint === 3 || this.game.players[1].setPoint === 3){
+        return;
+      }
 
       //On vérifie si le nombre de set gagné est supérieur a l'index du set actuel pour pouvoir passer au set suivant
       if(this.game.players[0].setPoint + this.game.players[1].setPoint > setIndex) {    
@@ -89,8 +92,11 @@ export class AppComponent implements OnInit {
 
       //Si opponent gagne le set on incrémente setPoint de 1
       if (this.hasWonSet(opponent, shooter, setIndex)) {
-        let winner = this.game.players.find(el => el.player = opponent.player);
-        winner.setPoint++;
+        this.game.players.forEach(player => {
+          if(player.player == opponent.player) {
+            player.setPoint++;
+          }          
+        });
       }
     }
   }

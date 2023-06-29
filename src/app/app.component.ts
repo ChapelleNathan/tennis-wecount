@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
     }
     let currentSet: SetInterface = this.game.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 150; i++) {
 
       //On vérifie si le nombre de set gagné est supérieur a l'index du set actuel pour pouvoir passer au set suivant
       if(this.game.players[0].setPoint + this.game.players[1].setPoint > setIndex) {    
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
         currentSet = this.game.sets[setIndex];
       } 
 
-      this.newPoint(currentSet.players[0], currentSet.players[1], i + 1);
+      this.newPoint(currentSet.players[0], currentSet.players[1], i + 1, setIndex);
     }
   }
 
@@ -72,13 +72,14 @@ export class AppComponent implements OnInit {
     shooter: { player: PlayerInterface; score: number },
     opponent: { player: PlayerInterface; score: number },
     pointNumber: number,
+    setIndex: number,
   ) {
     //on lance le dé pour savoir si il réussi son coup
     let roll = this.diceRoll();
 
     if (shooter.player.strength > roll) {
       //si il réussi son coup, il l'envoi à opponent qui deviens le shooter
-      this.newPoint(opponent, shooter, pointNumber);
+      this.newPoint(opponent, shooter, pointNumber, setIndex);
     } else {
       //si il rate on incrémente le score de opponent de 1
       opponent.score++;
@@ -87,7 +88,7 @@ export class AppComponent implements OnInit {
       );
 
       //Si opponent gagne le set on incrémente setPoint de 1
-      if (this.hasWonSet(opponent, shooter)) {
+      if (this.hasWonSet(opponent, shooter, setIndex)) {
         let winner = this.game.players.find(el => el.player = opponent.player);
         winner.setPoint++;
       }
@@ -113,11 +114,13 @@ export class AppComponent implements OnInit {
 
   private hasWonSet(
     winner: { player: PlayerInterface; score: number },
-    looser: { player: PlayerInterface; score: number }
+    looser: { player: PlayerInterface; score: number },
+    setIndex,
   ): boolean {
-    if (winner.score < 4) {
+    
+    if (winner.score < 4) {      
       return false;
-    } else if (this.game.sets.length === 5 && winner.score < 7) {
+    } else if (setIndex === 4 && winner.score < 7) {
       return false;
     }
 

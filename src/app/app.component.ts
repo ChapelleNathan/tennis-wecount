@@ -84,6 +84,7 @@ export class AppComponent implements OnInit {
       this.playSet(player1, player2);
       this.ballCount++;
     }    
+    console.log(player1);
   }
 
   private playSet(
@@ -137,17 +138,12 @@ export class AppComponent implements OnInit {
           ' a marqué contre ' +
           shooter.name
       );
-
       //Si opponent gagne le set on incrémente matchPoint de 1
       if (this.hasWonGame(opponent, shooter)) {
-        this.match.sets[this.setIndex].players.forEach((player) => {
-          if (player.id == opponent.id) {
-            player.setPoint++;
-          }
-        });
+        opponent.gameScore++;
       }
       if (this.hasWonSet(opponent, shooter)) {
-
+        opponent.setPoint++;
       }
     }
   }
@@ -156,7 +152,6 @@ export class AppComponent implements OnInit {
     winner: PlayerInterface,
     looser: PlayerInterface,
   ): boolean {
-
     if (winner.gameScore < 4) {
       return false;
     } else if (this.gameIndex === 11 && winner.gameScore < 7) {
@@ -178,7 +173,7 @@ export class AppComponent implements OnInit {
       return false;
     }
 
-    if (winner.setPoint > looser.setPoint + 1) {
+    if (winner.setPoint > looser.setPoint + 1) {      
       //TODO supprimer matchDebug
       this.matchDebug.push(
         'match ' +

@@ -1,7 +1,7 @@
 import { PlayerInterface } from "./player.interface";
 
 export class SetInterface {
-    players: {
+    players: [
         player1 : {
             player : PlayerInterface,
             score: number,
@@ -10,5 +10,5 @@ export class SetInterface {
             player: PlayerInterface,
             score: number,
         },
-    }
+    ]
 }

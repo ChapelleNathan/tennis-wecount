@@ -2,7 +2,7 @@ import { PlayerInterface } from "./player.interface";
 import { SetInterface } from "./set.interface";
 
 export class GameInterface {
-    players: {
+    players: [
         player1:{
             player: PlayerInterface,
             setPoint: number,
@@ -11,6 +11,6 @@ export class GameInterface {
             player: PlayerInterface,
             setPoint: number,
         },
-    }
+    ]
     sets: Array<SetInterface>;
 }

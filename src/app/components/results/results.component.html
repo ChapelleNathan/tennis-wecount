@@ -9,14 +9,14 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <ng-container *ngFor="let player in gameResults.players; index as i">
-                    <th>{{ player.name }}</th>
+            <ng-container *ngFor="let player of gameResults.players ; index as i">
+                <tr>
+                    <th>{{ player.player.name }}</th>
                     <ng-container *ngFor="let set of gameResults.sets">
-                        <th>{{ set.players[i] }}</th>
+                        <th>{{ set.players[i].score }}</th>
                     </ng-container>
-                </ng-container>
-            </tr>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 </ng-container>

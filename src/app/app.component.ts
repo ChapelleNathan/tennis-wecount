@@ -54,7 +54,10 @@ export class AppComponent implements OnInit {
     let currentSet: SetInterface = this.game.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
     for (let i = 0; i < 150; i++) {
+
+      //On vérifie si l'un des joueurs n'a pas remporté 3 sets
       if(this.game.players[0].setPoint === 3 || this.game.players[1].setPoint === 3){
+        this.game.sets = this.game.sets.slice(0, setIndex + 1)
         return;
       }
 

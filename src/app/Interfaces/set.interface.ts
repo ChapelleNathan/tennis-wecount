@@ -1,6 +1,14 @@
 import { PlayerInterface } from "./player.interface";
 
 export class SetInterface {
-    player1Score: number;
-    player2Score: number;
+    players: {
+        player1 : {
+            player : PlayerInterface,
+            score: number,
+        },
+        player2: {
+            player: PlayerInterface,
+            score: number,
+        },
+    }
 }

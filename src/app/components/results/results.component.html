@@ -10,17 +10,11 @@
         </thead>
         <tbody>
             <tr>
-                <th>{{ gameResults.players[0].name }}</th>
-                <ng-container *ngFor="let set of gameResults.sets">
-                    <th>{{ set.player1Score }}</th>
-                </ng-container>
-            </tr>
-            <tr>
-                <th>{{ gameResults.players[1].name }}</th>
-                <ng-container *ngFor="let set of gameResults.sets">
-                        <th>{{ set.player2Score }}</th>
-                    <ng-template #test>
-                    </ng-template>
+                <ng-container *ngFor="let player in gameResults.players; index as i">
+                    <th>{{ player.name }}</th>
+                    <ng-container *ngFor="let set of gameResults.sets">
+                        <th>{{ set.players[i] }}</th>
+                    </ng-container>
                 </ng-container>
             </tr>
         </tbody>

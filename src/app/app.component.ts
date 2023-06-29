@@ -11,64 +11,50 @@ import { SetInterface } from './Interfaces/set.interface';
 export class AppComponent implements OnInit {
   player1: PlayerInterface;
   player2: PlayerInterface;
-  gameResults: Array<string>;
+  gameLogs: Array<string>;
   game: GameInterface;
-  sets: Array<SetInterface>;
 
   ngOnInit(): void {
-    this.sets = null;
-    this.gameResults = null;
+    this.gameLogs = [];
   }
 
   public playerDatasEvent($event): void {
-    this.player1 = $event[0];
-    this.player2 = $event[1];
+    let player1 = $event[0];
+    let player2 = $event[1];
     this.resetGame();
-    this.play();
+    this.play(player1, player2);
   }
 
-  private play():void {
-    this.sets = [];
+  private play(player1: PlayerInterface, player2: PlayerInterface):void {
+    this.game = new GameInterface();
     this.game = {
-      players: [
-        this.player1,this.player2
-      ],
-      sets: this.sets,
+      players: {
+        player1 : player1,
+        player2 : player2,
+      },
+      sets : [],
     };
-    for (let i = 0; i < 150; i++) {
-      if(this.player1.setScore >=3 || this.player2.setScore >= 3) {
-        return;
-      }
-      if(this.game.sets.length >= 5){
-        return;
-      }
-      this.onePoint(this.player1, this.player2,i);
-    }
   }
 
-  private onePoint(shooter: PlayerInterface, opponent: PlayerInterface, pointNumber: number): void {
-    let dice = this.diceRoll();
-    if(shooter.strength > dice) {
-      this.onePoint(opponent, shooter, pointNumber);
-    } else {
-      if (this.hasWonSet(opponent, shooter)){
-        this.newSet();
-        opponent.setScore++;
-      }
-      this.gameResults.push('Point ' + (pointNumber + 1) + ' : remporté par ' + opponent.name)
-      opponent.score++;
-    }
-}
 
   private newSet() {
     let set = new SetInterface();
     set = {
-      player1Score: this.player1.score,
-      player2Score: this.player2.score,
+      players: {
+        player1 : {
+          player: this.game.players.player1,
+          score: 0,
+        },
+        player2: {
+          player: this.game.players.player2,
+          score: 0,
+        }
+      }
     };
     this.game.sets.push(set);
     this.resetSet()
   }
+
   private hasWonSet(winner: PlayerInterface, looser: PlayerInterface): boolean {
     if(winner.score < 4 ){
       return false;
@@ -94,6 +80,6 @@ export class AppComponent implements OnInit {
 
   private resetGame(): void {
     this.resetSet();
-    this.gameResults = [];
+    this.gameLogs = [];
   }
 }

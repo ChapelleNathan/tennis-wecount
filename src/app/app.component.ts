@@ -20,10 +20,11 @@ export class AppComponent implements OnInit {
   public playerDatasEvent($event): void {
     let player1 = $event[0];
     let player2 = $event[1];
+    let setNumber = 5;
     if (this.game) {
       this.resetGame();
     }
-    this.play(player1, player2);
+    this.play(player1, player2, setNumber);
   }
 
   private initGame(player1: PlayerInterface, player2: PlayerInterface) {
@@ -43,27 +44,27 @@ export class AppComponent implements OnInit {
     };
   }
 
-  private play(player1: PlayerInterface, player2: PlayerInterface): void {
-    let lastSet: SetInterface;
+  private play(player1: PlayerInterface, player2: PlayerInterface, setNumber: number): void {
+    let setIndex = 0;
     //initialisation de la partie
     this.initGame(player1, player2);
-    this.newSet();
-    lastSet = this.game.sets[this.game.sets.length - 1];
-
+    for(let i = 0; i < setNumber; i++){
+      this.newSet();
+    }
+    let currentSet: SetInterface = this.game.sets[setIndex];
     //on boucle pour avoir le nombre d'échange de coup souhaité
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 50; i++) {
 
-      //On vérifie si le nombre de set gagné correspond au nombre de set total si c'est le cas il faut créer un nouveau set
-      if(this.game.players[0].setPoint + this.game.players[1].setPoint == this.game.sets.length) {
-        if(this.game.sets.length > 5) {
-          this.game.sets.pop();
+      //On vérifie si le nombre de set gagné est supérieur a l'index du set actuel pour pouvoir passer au set suivant
+      if(this.game.players[0].setPoint + this.game.players[1].setPoint > setIndex) {    
+        setIndex++;        
+        if(setIndex > 4){
           return;
         }
-        lastSet = this.game.sets[this.game.sets.length - 1];
-        this.newSet();
+        currentSet = this.game.sets[setIndex];
       } 
 
-      this.newPoint(lastSet.players[0], lastSet.players[1],i + 1);
+      this.newPoint(currentSet.players[0], currentSet.players[1], i + 1);
     }
   }
 

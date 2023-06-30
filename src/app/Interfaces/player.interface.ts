@@ -12,5 +12,6 @@ export class PlayerInterface {
         this.gameScore = 0;
         this.setScore = 0;
         this.matchPoint = 0;
+        this.advantage = null;
     }
 }

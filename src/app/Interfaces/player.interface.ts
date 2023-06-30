@@ -2,7 +2,7 @@ export class PlayerInterface {
     name: string;
     level: number;
     strength: number;
-    id: number;
+    id: string;
     gameScore: number;
     setScore: number;
     matchPoint: number;

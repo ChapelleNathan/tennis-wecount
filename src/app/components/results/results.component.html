@@ -1,28 +1,79 @@
-<ng-container *ngIf="gameResults">
+<ng-container *ngIf="matchResults">
     <table class="table">
         <thead>
             <tr>
-                <th></th>
-                <ng-container *ngFor="let set of gameResults.sets; index as i">
-                    <th>Set {{ i + 1 }}</th>
+                <th>
+                    <p>
+                        Résultat :
+                        <ng-container *ngIf="matchResults.winner else noWinner">
+                            {{ matchResults.winner.name }} à remporter la partie !
+                        </ng-container>
+                    </p>
+                </th>
+                <ng-container *ngFor="let set of matchResults.match.sets; index as i">
+                    <ng-container *ngIf="matchResults.lastSet !== set || matchResults.winner; else currentGame">
+                        <th>Set {{ i + 1 }}</th>
+                    </ng-container>
+                    <ng-template #currentGame>
+                        <th>Current Game</th>
+                    </ng-template>
                 </ng-container>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>{{ gameResults.players[0].name }}</th>
-                <ng-container *ngFor="let set of gameResults.sets">
-                    <th>{{ set.player1Score }}</th>
-                </ng-container>
-            </tr>
-            <tr>
-                <th>{{ gameResults.players[1].name }}</th>
-                <ng-container *ngFor="let set of gameResults.sets">
-                        <th>{{ set.player2Score }}</th>
-                    <ng-template #test>
-                    </ng-template>
-                </ng-container>
-            </tr>
+            <ng-container *ngFor="let player of matchResults.match.players ; index as i">
+                <tr>
+                    <th>{{ player.name }}</th>
+                    <ng-container *ngFor="let set of matchResults.match.sets">
+                        <ng-container *ngIf="matchResults.lastSet !== set || matchResults.winner else currentGameScore">
+                            <td>{{ set.results[i].setScore }}</td>
+                        </ng-container>
+                        <ng-template #currentGameScore>
+                            <ng-container *ngIf="set.games.length - 1 < 11; else desiciveGame">
+                                <ng-container *ngIf="player.advantage === null; else advantage">
+                                    <ng-container *ngIf="(player.gameScore > 3) && (matchResults.match.players[0] === matchResults.match.players[1]) else notEquals">
+                                        <td>40</td>
+                                    </ng-container>
+                                    <ng-template #notEquals>
+                                        <ng-container [ngSwitch]="player.gameScore">
+                                            <ng-container *ngSwitchCase="0">
+                                                <td>0</td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="1">
+                                                <td>15</td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="2">
+                                                <td>30</td>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngSwitchCase="3">
+                                                <td>40</td>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-template>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #desiciveGame>
+                                <ng-container *ngIf="player.advantage === null; else advantage">
+                                    <td>{{ player.gameScore }}</td>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #advantage>
+                                <ng-container *ngIf="player.advantage; else disadventage">
+                                    <td>Av</td>
+                                </ng-container>
+                                <ng-template #disadventage>
+                                    <td>-</td>
+                                </ng-template>
+                            </ng-template>
+                        </ng-template>
+                    </ng-container>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 </ng-container>
+
+<ng-template #noWinner>
+    Jeu en cours, pas de vainqueur
+</ng-template>

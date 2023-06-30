@@ -58,16 +58,24 @@ export class AppComponent implements OnInit {
     //on boucle pour avoir le nombre d'échange de coup souhaité
     for (let i = 0; i < 300; i++) {
 
-      this.onePoint(player1,player2)
-      match.players.forEach(player => {
-        if (this.hasWonMatch(player)) {
-          this.winner = player;
-        }
-      });
+      this.onePoint(player1,player2);
+
       if(this.winner) {
+        this.matchResults = {
+          match: match,
+          winner: this.winner,
+          lastSet: this.currentSet,
+        }
         break;
       }
       this.ballCount++;
+    }
+    if (match.players[0].matchPoint < 3 && match.players[1].matchPoint < 3) {
+      this.matchResults = {
+        match: match,
+        winner: this.winner,
+        lastSet: this.currentSet,
+      }
     }
   }
 
@@ -75,7 +83,6 @@ export class AppComponent implements OnInit {
     shooter: PlayerInterface,
     opponent: PlayerInterface,
     ){
-      let winner: PlayerInterface | null;
        //on lance le dé pour savoir si il réussi son coup
     let roll = this.diceRoll();
     if (shooter.strength > roll) {
@@ -92,7 +99,7 @@ export class AppComponent implements OnInit {
           ' a marqué contre ' +
           shooter.name
       );
-      //Si opponent gagne le set on incrémente matchPoint de 1
+      //On vérifie si opponent 
       this.hasWonGame(opponent, shooter);
     }
   }
@@ -115,6 +122,7 @@ export class AppComponent implements OnInit {
     if (winner.gameScore > looser.gameScore + 1) {
       //On incrémente setScore de 1 car winner a ganger le set
       winner.setScore++;
+
       //On enregistre le score du set pour le lire plus tard sur le front
       this.currentGame.results = [
         {
@@ -126,6 +134,7 @@ export class AppComponent implements OnInit {
           score: this.match.players[1].gameScore
         }
       ]
+      
       //On réinitialise gameScore pour passer au jeu suivant
       this.match.players.forEach(player => {
         player.gameScore = 0;
@@ -133,7 +142,7 @@ export class AppComponent implements OnInit {
 
       //On initialise un nouveau jeu et on le met a currentGame et on vérifie si le joueur n'a pas gagner le set
       this.currentGame = this.newGame(this.match.players[0], this.match.players[1]);
-      this.hasWonSet(winner, looser)
+      this.hasWonSet(winner, looser);
     }
     return;
   }
@@ -171,7 +180,14 @@ export class AppComponent implements OnInit {
       this.match.players.forEach(player => {
         player.setScore = 0;
       });
-      this.currentSet = this.newSet(this.match.players[0], this.match.players[1]);
+
+      if(winner.matchPoint < 3) {
+        this.currentSet = this.newSet(this.match.players[0], this.match.players[1]);
+      } else {
+        if (this.hasWonMatch(winner)) {
+          this.winner = winner;
+        }
+      }
     }
     return;
   }
@@ -204,21 +220,5 @@ export class AppComponent implements OnInit {
 
   private diceRoll(): number {
     return Math.round(Math.random() * 100 + 1);
-  }
-
-  private defineWinner(setIndex: number): void {
-    let winner: PlayerInterface;
-    if (this.match.players[0].matchPoint === 3) {
-      winner = this.match.players[0];
-    } else if (this.match.players[1].matchPoint === 3) {
-      winner = this.match.players[1];
-    } else {
-      winner = null;
-    }
-    this.matchResults = {
-      match: this.match,
-      winner: winner,
-      lastSet: this.match.sets[setIndex],
-    };
   }
 }

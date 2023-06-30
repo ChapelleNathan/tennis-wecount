@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PlayerInterface } from 'src/app/Interfaces/player.interface';
 
 @Component({
@@ -16,33 +16,48 @@ export class PlayerFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.player1Form = new FormGroup({
-      name: new FormControl('Joueur1'),
-      level: new FormControl(5),
+      name: new FormControl('Joueur1', [
+        Validators.required
+      ]),
+      level: new FormControl(5,[
+        Validators.required,
+        Validators.max(10),
+        Validators.min(1),
+      ]),
     });
 
     this.player2Form = new FormGroup({
-      name: new FormControl('Joueur2'),
-      level: new FormControl(5),
+      name: new FormControl('Joueur2', [
+        Validators.required
+      ]),
+      level: new FormControl(5, [
+        Validators.required,
+        Validators.max(10),
+        Validators.min(1),
+      ]),
     });
   }
 
   onSubmit(player1: PlayerInterface, player2: PlayerInterface): void {
-
-    let players = [player1,player2]
-    players.forEach(player => {
-      this.strengthCalculator(player)
-      this.idGenerator(player)
-    });    
-    this.playerFormEvent.emit(players);
+    if (this.player1Form.valid && this.player2Form.valid){
+      let players = [player1,player2]
+      players.forEach(player => {
+        player.strength = this.strengthCalculator(player)
+        player.id = this.idGenerator()
+        player.gameScore = 0;
+        player.setScore = 0;
+        player.matchPoint = 0;
+        console.log(player.strength);
+      });
+      this.playerFormEvent.emit(players);
+    }
   }
 
-  private strengthCalculator(player: PlayerInterface): void {
-    let strength =
-      player.level * 10 - player.level / 2 - Math.floor(Math.random() * 11);
-    strength < 10 ? (player.strength = 10) : (player.strength = strength);
+  private strengthCalculator(player: PlayerInterface): number {
+    return Math.floor(((player.level * 10) / 3) + 65);
   }
 
-  private idGenerator(player: PlayerInterface):void {
-    player.id = Math.floor(Math.random() * 10000 + 1)
+  private idGenerator(): number {
+    return Math.floor(Math.random() * 10000 + 1)
   }
 }

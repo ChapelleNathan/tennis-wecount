@@ -64,9 +64,11 @@ export class AppComponent implements OnInit {
           this.winner = player;
         }
       });
+      if(this.winner) {
+        break;
+      }
       this.ballCount++;
     }
-    console.log(match);
   }
 
   private onePoint(
@@ -147,7 +149,7 @@ export class AppComponent implements OnInit {
       winner.matchPoint++;
       //TODO supprimer matchDebug
       this.matchDebug.push(
-        'match ' +
+        'Set ' +
           (this.match.sets.length) +
           ' ' +
           winner.name +

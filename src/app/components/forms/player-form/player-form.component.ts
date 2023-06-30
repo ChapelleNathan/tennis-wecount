@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PlayerInterface } from 'src/app/Interfaces/player.interface';
 
 @Component({
@@ -16,27 +16,43 @@ export class PlayerFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.player1Form = new FormGroup({
-      name: new FormControl('Joueur1'),
-      level: new FormControl(5),
+      name: new FormControl('Joueur1', [
+        Validators.required
+      ]),
+      level: new FormControl(5,[
+        Validators.required,
+        Validators.max(10),
+        Validators.min(1),
+      ]),
     });
 
     this.player2Form = new FormGroup({
-      name: new FormControl('Joueur2'),
-      level: new FormControl(5),
+      name: new FormControl('Joueur2', [
+        Validators.required
+      ]),
+      level: new FormControl(5, [
+        Validators.required,
+        Validators.max(10),
+        Validators.min(1),
+      ]),
     });
   }
 
   onSubmit(player1: PlayerInterface, player2: PlayerInterface): void {
 
-    let players = [player1,player2]
-    players.forEach(player => {
-      this.strengthCalculator(player)
-      this.idGenerator(player)
-      player.gameScore = 0;
-      player.setScore = 0;
-      player.matchPoint = 0;
-    });    
-    this.playerFormEvent.emit(players);
+    if (this.player1Form.valid && this.player2Form.valid){
+      let players = [player1,player2]
+      players.forEach(player => {
+        this.strengthCalculator(player)
+        this.idGenerator(player)
+        player.gameScore = 0;
+        player.setScore = 0;
+        player.matchPoint = 0;
+      });    
+      this.playerFormEvent.emit(players);
+    } else {
+      console.log('toto');
+    }
   }
 
   private strengthCalculator(player: PlayerInterface): void {

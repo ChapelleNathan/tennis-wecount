@@ -12,13 +12,10 @@ import { MatchInterface } from './Interfaces/match.interface';
 })
 export class AppComponent implements OnInit {
   matchLogs: Array<string>;
-  matchDebug: Array<string> = [];
   match: MatchInterface;
   ballCount: number = 0;
   currentSet: SetInterface;
   currentGame: GameInterface;
-  setIndex : number;
-  gameIndex: number;
   winner: PlayerInterface;
   matchResults: {
     match: MatchInterface;
@@ -33,7 +30,6 @@ export class AppComponent implements OnInit {
   public playerDatasEvent($event): void {
     let player1 = $event[0];
     let player2 = $event[1];
-    this.matchDebug = [];
     this.initmatch(player1, player2);
     this.play(this.match);
   }
@@ -155,17 +151,6 @@ export class AppComponent implements OnInit {
     }
     if (winner.setScore > looser.setScore + 1) {  
       winner.matchPoint++;
-      //TODO supprimer matchDebug
-      this.matchDebug.push(
-        'Set ' +
-          (this.match.sets.length) +
-          ' ' +
-          winner.name +
-          ' a gagner le set ' +
-          winner.setScore +
-          ' points a ' +
-          looser.setScore
-      );
       this.currentSet.results = [
         {
           playerId: this.match.players[0].id,

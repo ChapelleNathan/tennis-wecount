@@ -12,20 +12,10 @@
           </ng-container>
         </ul>
       </ng-container>
-    </div>
-    <!--TODO erase this part when over-->
-    <ul class="text-start">
-      <ng-container *ngIf="match">
-        <ng-container  *ngFor="let gameMessage of matchDebug">
-          <li>
-            <p>{{ gameMessage }}</p>
-          </li>
-        </ng-container>
-      </ng-container>
-    </ul>
+    </div> 
   </section>
-  <section>
-    <app-results [matchResults]="matchResults" ></app-results>
+  <section class="my-3">
+    <app-results [matchResults]="matchResults"></app-results>
   </section>
 </main>
 

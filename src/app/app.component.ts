@@ -53,8 +53,8 @@ export class AppComponent implements OnInit {
     //initialisation de la partie
     let player1 = match.players[0];
     let player2 = match.players[1];
-    this.currentSet = this.newSet(player1, player2);
-    this.currentGame = this.newGame(player1, player2);
+    this.currentSet = this.newSet();
+    this.currentGame = this.newGame();
     //on boucle pour avoir le nombre d'échange de coup souhaité
     for (let i = 0; i < 300; i++) {
 
@@ -92,13 +92,7 @@ export class AppComponent implements OnInit {
       //si il rate on incrémente le score de opponent de 1
       opponent.gameScore++;
       this.matchLogs.push(
-        'Point n°' +
-          (this.ballCount + 1) +
-          ' : ' +
-          opponent.name +
-          ' a marqué contre ' +
-          shooter.name
-      );
+        'Point n°' + (this.ballCount + 1) + ' : remporté par ' + opponent.name);
       //On vérifie si opponent 
       this.hasWonGame(opponent, shooter);
     }
@@ -126,11 +120,11 @@ export class AppComponent implements OnInit {
       //On enregistre le score du set pour le lire plus tard sur le front
       this.currentGame.results = [
         {
-          player: this.match.players[0],
+          playerId: this.match.players[0].id,
           score: this.match.players[0].gameScore,
         },
         {
-          player: this.match.players[1],
+          playerId: this.match.players[1].id,
           score: this.match.players[1].gameScore
         }
       ]
@@ -141,7 +135,7 @@ export class AppComponent implements OnInit {
       });
 
       //On initialise un nouveau jeu et on le met a currentGame et on vérifie si le joueur n'a pas gagner le set
-      this.currentGame = this.newGame(this.match.players[0], this.match.players[1]);
+      this.currentGame = this.newGame();
       this.hasWonSet(winner, looser);
     }
     return;
@@ -169,11 +163,11 @@ export class AppComponent implements OnInit {
       );
       this.currentSet.results = [
         {
-          player: this.match.players[0],
+          playerId: this.match.players[0].id,
           setScore: this.match.players[0].setScore
         },
         {
-          player: this.match.players[1],
+          playerId: this.match.players[1].id,
           setScore: this.match.players[1].setScore,
         },
       ];
@@ -182,7 +176,7 @@ export class AppComponent implements OnInit {
       });
 
       if(winner.matchPoint < 3) {
-        this.currentSet = this.newSet(this.match.players[0], this.match.players[1]);
+        this.currentSet = this.newSet();
       } else {
         if (this.hasWonMatch(winner)) {
           this.winner = winner;
@@ -202,18 +196,14 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private newSet(player1: PlayerInterface, player2: PlayerInterface): SetInterface {
+  private newSet(): SetInterface {
     let newSet = new SetInterface();
-    newSet.players.push(player1);
-    newSet.players.push(player2);
     this.match.sets.push(newSet);
     return newSet;
   }
 
-  private newGame(player1: PlayerInterface, player2: PlayerInterface): GameInterface {
+  private newGame(): GameInterface {
     let newGame = new GameInterface();
-    newGame.players.push(player1);
-    newGame.players.push(player2);
     this.currentSet.games.push(newGame);
     return newGame;
   }

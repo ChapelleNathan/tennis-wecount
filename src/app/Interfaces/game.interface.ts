@@ -1,10 +1,8 @@
 import { PlayerInterface } from "./player.interface";
 
 export class GameInterface {
-    players: Array<PlayerInterface>;
-    results: Array<{player: PlayerInterface, score: number}>
+    results: Array<{playerId: number, score: number}>
     constructor(){
-        this.players = [];
         this.results = [];
     }
 }

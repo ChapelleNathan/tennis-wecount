@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
     this.currentSet = this.newSet();
     this.currentGame = this.newGame();
     //on boucle pour avoir le nombre d'échange de coup souhaité
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 150; i++) {
 
       this.onePoint(player1,player2);
 
@@ -136,7 +136,12 @@ export class AppComponent implements OnInit {
 
       //On initialise un nouveau jeu et on le met a currentGame et on vérifie si le joueur n'a pas gagner le set
       this.currentGame = this.newGame();
+      winner.advantage = null;
+      looser.advantage = null;
       this.hasWonSet(winner, looser);
+    } else {
+      winner.advantage = true;
+      looser.advantage = false;
     }
     return;
   }

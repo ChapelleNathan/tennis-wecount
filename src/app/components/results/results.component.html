@@ -30,26 +30,41 @@
                         </ng-container>
                         <ng-template #currentGameScore>
                             <ng-container *ngIf="set.games.length - 1 < 11; else desiciveGame">
-                                <ng-container [ngSwitch]="player.gameScore">
-                                    <ng-container *ngSwitchCase="0">
-                                        <td>0</td>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="1">
-                                        <td>15</td>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="2">
-                                        <td>30</td>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="3 || matchResults.match.players[0].gameScore === matchResults.match.players[1].gameScore">
+                                <ng-container *ngIf="player.advantage === null; else advantage">
+                                    <ng-container *ngIf="(player.gameScore > 3) && (matchResults.match.players[0] === matchResults.match.players[1]) else notEquals">
                                         <td>40</td>
                                     </ng-container>
-                                    <ng-container *ngSwitchDefault>
-                                        toto
-                                    </ng-container>
+                                    <ng-template #notEquals>
+                                        <ng-container [ngSwitch]="player.gameScore">
+                                            <ng-container *ngSwitchCase="0">
+                                                <td>0</td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="1">
+                                                <td>15</td>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="2">
+                                                <td>30</td>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngSwitchCase="3">
+                                                <td>40</td>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-template>
                                 </ng-container>
                             </ng-container>
                             <ng-template #desiciveGame>
-                                <td>{{ player.gameScore }}</td>
+                                <ng-container *ngIf="player.advantage === null; else advantage">
+                                    <td>{{ player.gameScore }}</td>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #advantage>
+                                <ng-container *ngIf="player.advantage; else disadventage">
+                                    <td>Av</td>
+                                </ng-container>
+                                <ng-template #disadventage>
+                                    <td>-</td>
+                                </ng-template>
                             </ng-template>
                         </ng-template>
                     </ng-container>
